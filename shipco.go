@@ -67,3 +67,15 @@ func (c *Client) NewRequest(method, pathStr string, body interface{}) (*http.Req
 	req.Header.Add("Content-Type", "application/json")
 	return req, nil
 }
+
+// Do can be used to perform the request created with NewRequest
+func (c *Client) Do(req *http.Request) (interface{}, error) {
+	resp, err := c.client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	var response interface{}
+	err = json.NewDecoder(resp.Body).Decode(&response)
+	return response, err
+}
